@@ -36,16 +36,16 @@ imgconvert -n -r .
 ## Installation
 
 ### Pre-compiled Binaries
-Download from [releases](https://github.com/miracleio/imgconvert/releases)
+Download from [releases](https://github.com/aevrHQ/imgconvert/releases)
 
 ### Via go install
 ```bash
-go install github.com/miracleio/imgconvert/cmd/imgconvert@latest
+go install github.com/aevrHQ/imgconvert/cmd/imgconvert@latest
 ```
 
 ### Build from Source
 ```bash
-git clone https://github.com/miracleio/imgconvert.git
+git clone https://github.com/aevrHQ/imgconvert.git
 cd imgconvert
 go build -o imgconvert ./cmd/imgconvert
 ```
