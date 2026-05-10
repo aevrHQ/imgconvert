@@ -5,9 +5,9 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/miracleio/imgconvert/internal/converter/plugins"
-	"github.com/miracleio/imgconvert/internal/processor"
-	"github.com/miracleio/imgconvert/internal/scanner"
+	"github.com/aevrHQ/imgconvert/internal/converter/plugins"
+	"github.com/aevrHQ/imgconvert/internal/processor"
+	"github.com/aevrHQ/imgconvert/internal/scanner"
 	"github.com/spf13/cobra"
 )
 
