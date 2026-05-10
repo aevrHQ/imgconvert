@@ -1,0 +1,50 @@
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  IMGCONVERT - INSTALLATION QUICK REFERENCE            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+═══════════════════════════════════════════════════════════
+  FASTEST WAY - Copy & Paste This One Command
+═══════════════════════════════════════════════════════════
+
+cd /Users/miracleio/Documents/devprojects/image-converter && \
+./build.sh && \
+sudo cp imgconvert /usr/local/bin/
+
+  ✓ Done! Now use "imgconvert" from any directory.
+
+═══════════════════════════════════════════════════════════
+  ALTERNATIVE - No Sudo Required
+═══════════════════════════════════════════════════════════
+
+echo 'export PATH="$HOME/Documents/devprojects/image-converter:$PATH"' >> ~/.zshrc && source ~/.zshrc
+
+  ✓ Done! Now use "imgconvert" from any directory.
+
+═══════════════════════════════════════════════════════════
+  TEST IT
+═══════════════════════════════════════════════════════════
+
+imgconvert --version
+cd ~/Pictures
+imgconvert photo.jpg
+
+═══════════════════════════════════════════════════════════
+  COMMON USAGE
+═══════════════════════════════════════════════════════════
+
+imgconvert photo.jpg                    # Convert one file
+imgconvert *.jpg                        # Convert all JPGs
+imgconvert -r /path/to/photos           # Recursive
+imgconvert -q 90 --scale 80 photo.jpg   # High quality, resized
+imgconvert --preset web *.jpg           # Web preset
+imgconvert -n -r .                      # Preview (dry-run)
+
+═══════════════════════════════════════════════════════════
+  GET HELP
+═══════════════════════════════════════════════════════════
+
+imgconvert --help                # All options
+cat docs/quickstart.md           # Examples
+cat docs/installation.md         # More install options
+
+═══════════════════════════════════════════════════════════
