@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 
 	"github.com/disintegration/imaging"
-	"github.com/miracleio/imgconvert/internal/converter"
-	"github.com/miracleio/imgconvert/internal/scanner"
+	"github.com/aevrHQ/imgconvert/internal/converter"
+	"github.com/aevrHQ/imgconvert/internal/scanner"
 	"github.com/schollz/progressbar/v3"
 )
 

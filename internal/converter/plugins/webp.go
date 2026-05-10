@@ -9,7 +9,7 @@ import (
 	"io"
 
 	"github.com/chai2010/webp"
-	"github.com/miracleio/imgconvert/internal/converter"
+	"github.com/aevrHQ/imgconvert/internal/converter"
 	"golang.org/x/image/bmp"
 )
 
