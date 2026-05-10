@@ -35,7 +35,12 @@ imgconvert -n -r .
 
 ## Installation
 
-### Quick Install (Recommended)
+### Prerequisites
+- Go 1.20 or later (installer can set this up for you)
+
+### macOS
+
+#### Quick Install (Recommended)
 ```bash
 git clone https://github.com/aevrHQ/imgconvert.git
 cd imgconvert
@@ -45,26 +50,72 @@ cd imgconvert
 The installer will:
 1. Set up Go if needed (installs to `~/gosdk/bin`)
 2. Install the tool to `~/go/bin/imgconvert` (wrapper script)
-3. Add `~/go/bin` to your PATH in `~/.zshrc` or `~/.bashrc`
+3. Add `~/go/bin` to your PATH
 
-### ⚠️ Important: First-Time Setup
-After installation, **reload your shell configuration**:
+**⚠️ Important: First-Time Setup**
+After installation, reload your shell configuration:
 ```bash
-source ~/.zshrc  # or source ~/.bashrc
+source ~/.zshrc  # if using zsh (default on macOS)
+source ~/.bashrc # if using bash
 ```
 
 You only need to do this once in each open terminal. New terminals will work automatically.
 
-### Verify Installation
+**Why a wrapper script?**  
+macOS Gatekeeper blocks unsigned binaries. The installer creates a wrapper that uses `go run` to avoid code signing issues.
+
+#### Manual macOS Installation
+If the installer doesn't work:
 ```bash
-imgconvert --version
+git clone https://github.com/aevrHQ/imgconvert.git
+cd imgconvert
+
+# Create wrapper script
+cat > ~/go/bin/imgconvert << 'EOF'
+#!/bin/bash
+CURRENT_DIR="$(pwd)"
+export PATH="$HOME/gosdk/bin:$PATH"
+ARGS=()
+for arg in "$@"; do
+    if [[ -e "$arg" ]] || [[ -e "$CURRENT_DIR/$arg" ]]; then
+        if [[ "$arg" = /* ]]; then
+            ARGS+=("$arg")
+        else
+            ARGS+=("$CURRENT_DIR/$arg")
+        fi
+    else
+        ARGS+=("$arg")
+    fi
+done
+cd /Users/$(whoami)/Documents/devprojects/image-converter
+exec go run cmd/imgconvert/main.go "${ARGS[@]}"
+EOF
+
+chmod +x ~/go/bin/imgconvert
+
+# Add to PATH
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-### Alternative Methods
+### Linux
 
-#### Via go install
+#### Via go install (Recommended)
 ```bash
 go install github.com/aevrHQ/imgconvert/cmd/imgconvert@latest
+```
+
+This installs a compiled binary to `~/go/bin/imgconvert`.
+
+**Add to PATH (if not already):**
+```bash
+# For bash
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# For zsh
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
 #### Build from Source
@@ -72,6 +123,63 @@ go install github.com/aevrHQ/imgconvert/cmd/imgconvert@latest
 git clone https://github.com/aevrHQ/imgconvert.git
 cd imgconvert
 go build -o imgconvert ./cmd/imgconvert
+
+# Install globally
+sudo mv imgconvert /usr/local/bin/
+```
+
+#### Using package script
+```bash
+git clone https://github.com/aevrHQ/imgconvert.git
+cd imgconvert
+./build.sh
+sudo mv imgconvert /usr/local/bin/
+```
+
+### Windows
+
+#### Via go install
+```powershell
+go install github.com/aevrHQ/imgconvert/cmd/imgconvert@latest
+```
+
+This installs to `%USERPROFILE%\go\bin\imgconvert.exe`.
+
+**Add to PATH:**
+1. Search for "Environment Variables" in Windows
+2. Edit "Path" for your user
+3. Add: `%USERPROFILE%\go\bin`
+4. Restart your terminal
+
+#### Build from Source
+```powershell
+git clone https://github.com/aevrHQ/imgconvert.git
+cd imgconvert
+go build -o imgconvert.exe .\cmd\imgconvert
+```
+
+Then move `imgconvert.exe` to a directory in your PATH, or add the current directory to PATH.
+
+#### Using PowerShell
+```powershell
+# Convert images
+.\imgconvert.exe *.jpg
+
+# Or if in PATH
+imgconvert *.jpg
+```
+
+#### Using Command Prompt
+```cmd
+imgconvert *.jpg
+```
+
+### Verify Installation
+
+All platforms:
+```bash
+imgconvert --version
+imgconvert --help
 ```
 
 ## Getting Started
@@ -145,30 +253,81 @@ imgconvert --delete-original *.jpg
 
 ### Troubleshooting
 
-#### "command not found: imgconvert"
-**Solution:** Reload your shell configuration:
+#### macOS Issues
+
+**"killed" or "zsh: killed" errors**  
+This happens with compiled binaries on macOS due to code signing. Use the installer script which creates a wrapper that avoids this issue.
+
+**"command not found: imgconvert"**  
+Solution: Reload your shell configuration:
 ```bash
 source ~/.zshrc  # or source ~/.bashrc
 ```
 
-#### "killed" or "zsh: killed" errors (macOS)
-This happens with compiled binaries on macOS due to code signing. The installer uses a **wrapper script** that avoids this issue by running the tool via `go run` instead of a compiled binary.
-
-**How it works:**
-- The wrapper at `~/go/bin/imgconvert` automatically converts relative paths to absolute paths
-- Then runs the tool from the project directory
-- You don't need to think about it - just use `imgconvert` normally!
-
-#### Cannot access file errors
-If you see errors like `cannot access file.jpg: no such file or directory`:
+**Cannot access file errors**  
+If you see `cannot access file.jpg: no such file or directory`:
 1. Make sure you've sourced your shell config (`source ~/.zshrc`)
 2. Verify the files exist: `ls *.jpg`
 3. Try using absolute paths: `imgconvert /full/path/to/file.jpg`
 
-#### Permission denied
+**Permission denied**  
 Make sure the wrapper script is executable:
 ```bash
 chmod +x ~/go/bin/imgconvert
+```
+
+#### Linux Issues
+
+**"command not found: imgconvert"**  
+Make sure `~/go/bin` is in your PATH:
+```bash
+export PATH="$HOME/go/bin:$PATH"
+# Add to ~/.bashrc or ~/.zshrc to make permanent
+```
+
+**Permission denied**  
+Make the binary executable:
+```bash
+chmod +x ~/go/bin/imgconvert
+# Or if installed globally:
+sudo chmod +x /usr/local/bin/imgconvert
+```
+
+#### Windows Issues
+
+**"imgconvert is not recognized"**  
+Add Go's bin directory to your PATH:
+1. Open "Edit environment variables for your account"
+2. Edit "Path" variable
+3. Add: `%USERPROFILE%\go\bin`
+4. Restart terminal/PowerShell
+
+**Wildcard not working**  
+PowerShell and Command Prompt handle wildcards differently. Use quotes:
+```powershell
+imgconvert "*.jpg"
+```
+
+Or use `Get-ChildItem`:
+```powershell
+Get-ChildItem *.jpg | ForEach-Object { imgconvert $_.FullName }
+```
+
+#### General Issues
+
+**"go: command not found"**  
+Install Go from [golang.org/dl](https://golang.org/dl/)
+
+**Out of memory errors**  
+Reduce parallel jobs:
+```bash
+imgconvert -j 2 *.jpg  # Use only 2 workers
+```
+
+**Slow performance**  
+Ensure you're not limiting CPU:
+```bash
+imgconvert -j 0 *.jpg  # Use all available cores (default)
 ```
 
 ### Performance Tips
